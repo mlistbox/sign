@@ -39,6 +39,8 @@ public class sign {
             Mat descriptor2 = new Mat();
             sift.compute(img1, mkp1, descriptor1);
             sift.compute(img2, mkp2, descriptor2);
+            //FlannBasedMatcher bm=new FlannBasedMatcher();
+            //bm
             DescriptorMatcher matcher=DescriptorMatcher.create("BruteForce");
             Mat img_matches=new Mat();
             MatOfDMatch v=new MatOfDMatch();
