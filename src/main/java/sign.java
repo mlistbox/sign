@@ -56,20 +56,20 @@ public class sign {
             Mat img1 = new Mat();
             Mat outimg1=new Mat();
             Mat outtimg1=new Mat();
-            Imgproc.resize(src_img1, img1, new Size(480, 320));
+            Imgproc.resize(src_img1, img1, new Size(1024, 682));
             Imgproc.cvtColor(img1,outimg1,Imgproc.COLOR_BayerGB2GRAY);
-            Imgproc.threshold(outimg1,outtimg1,150,255,Imgproc.THRESH_BINARY);
+            //Imgproc.threshold(outimg1,outtimg1,170,255,Imgproc.THRESH_BINARY);
             //HighGui.imshow("image after", outtimg1);
             //HighGui.waitKey(0);
-            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\07.jpg",Imgcodecs.IMREAD_GRAYSCALE);
+            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\06.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img2 = new Mat();
             Mat outimg2=new Mat();
             Mat outtimg2=new Mat();
-            Imgproc.resize(src_img2, img2, new Size(480, 320));
+            Imgproc.resize(src_img2, img2, new Size(1024, 682));
             Imgproc.cvtColor(img2,outimg2,Imgproc.COLOR_BayerGB2GRAY);
-            Imgproc.threshold(outimg2,outtimg2,150,255,Imgproc.THRESH_BINARY);
+            //Imgproc.threshold(outimg2,outtimg2,170,255,Imgproc.THRESH_BINARY);
             Features2d fd=new Features2d();
-            SIFT sift = SIFT.create(0,4,0.01,20,1.6);
+            SIFT sift = SIFT.create(0,8,0.1,6,1);
             MatOfKeyPoint mkp1 =new MatOfKeyPoint();
             MatOfKeyPoint mkp2 =new MatOfKeyPoint();
             //sift.detect(img1,mkp1);
@@ -78,8 +78,8 @@ public class sign {
             Mat descriptor2 = new Mat();
             //sift.compute(img1, mkp1, descriptor1);
             //sift.compute(img2, mkp2, descriptor2);
-            sift.detectAndCompute(outtimg1,new Mat(),mkp1,descriptor1);
-            sift.detectAndCompute(outtimg2,new Mat(),mkp2,descriptor2);
+            sift.detectAndCompute(outimg1,new Mat(),mkp1,descriptor1);
+            sift.detectAndCompute(outimg2,new Mat(),mkp2,descriptor2);
             //FlannBasedMatcher bm=new FlannBasedMatcher();
             //bm
             //DescriptorMatcher matcher=DescriptorMatcher.create("BruteForce");
@@ -103,7 +103,7 @@ public class sign {
                 //sum[0]=sum[0]+v.distance;
             });
             //System.out.println("------------------");
-            km.setK(5);
+            km.setK(10);
             List<List<Float>> cresult = km.clustering();
             List<Float> center = km.getClusteringCenterT();
             //int i[]={0};
@@ -117,7 +117,7 @@ public class sign {
             System.out.println("++++++++++++++++++++++++++++++++++++++");
             //min[1]=min[1]/matrix.toList().size();
             List<DMatch> ldm=new ArrayList<DMatch>();
-
+            /*
             for(int j=0;j<1;j++)
             {
                 List<Float> f = cresult.get(center.indexOf(center1.get(j)));
@@ -132,14 +132,14 @@ public class sign {
                 });
                 System.out.println("j="+j+";"+(double)f.size()/matrix.toList().size()+";"+center1.get(j));
             }
+            */
 
-
-            //matrix.toList().forEach((v) -> {
-            //    if(min[0]/0.8 >=v.distance) ldm.add(v);
-            //        });
-            //System.out.println(String.valueOf(min[0])+","+ldm.size()+";"+(double)ldm.size()/matrix.toList().size());
+            matrix.toList().forEach((v) -> {
+                if(min[0]*3 >=v.distance) ldm.add(v);
+                    });
+            System.out.println(String.valueOf(min[0])+","+ldm.size()+";"+(double)ldm.size()/matrix.toList().size());
             goodmatrix.fromList(ldm);
-            Features2d.drawMatches(outtimg1, mkp1, outtimg2, mkp2, goodmatrix, img_matches);
+            Features2d.drawMatches(outimg1, mkp1, outimg2, mkp2, goodmatrix, img_matches);
             //fd.drawKeypoints(img1,mkp1,outimg1);
             HighGui.imshow("image after", img_matches);
             HighGui.waitKey(0);
