@@ -56,20 +56,20 @@ public class sign {
             Mat img1 = new Mat();
             Mat outimg1=new Mat();
             Mat outtimg1=new Mat();
-            Imgproc.resize(src_img1, img1, new Size(512, 512));
+            Imgproc.resize(src_img1, img1, new Size(480, 320));
             Imgproc.cvtColor(img1,outimg1,Imgproc.COLOR_BayerGB2GRAY);
             Imgproc.threshold(outimg1,outtimg1,150,255,Imgproc.THRESH_BINARY);
             //HighGui.imshow("image after", outtimg1);
             //HighGui.waitKey(0);
-            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\06.jpg",Imgcodecs.IMREAD_GRAYSCALE);
+            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\07.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img2 = new Mat();
             Mat outimg2=new Mat();
             Mat outtimg2=new Mat();
-            Imgproc.resize(src_img2, img2, new Size(512, 512));
+            Imgproc.resize(src_img2, img2, new Size(480, 320));
             Imgproc.cvtColor(img2,outimg2,Imgproc.COLOR_BayerGB2GRAY);
             Imgproc.threshold(outimg2,outtimg2,150,255,Imgproc.THRESH_BINARY);
             Features2d fd=new Features2d();
-            SIFT sift = SIFT.create();
+            SIFT sift = SIFT.create(0,4,0.01,20,1.6);
             MatOfKeyPoint mkp1 =new MatOfKeyPoint();
             MatOfKeyPoint mkp2 =new MatOfKeyPoint();
             //sift.detect(img1,mkp1);
@@ -91,33 +91,34 @@ public class sign {
             matcher.match(descriptor1, descriptor2,matrix);
             //Features2d.drawMatches(img1, mkp1, img2, mkp2, matrix, img_matches);
             List<Float> dis=new ArrayList<Float>();
-            //double min[]= {(matrix.toList().get(0)).distance,0};
+            double min[]= {(matrix.toList().get(0)).distance};
             KMeans km= new KMeans();
 
             matrix.toList().forEach((v)->{
                 System.out.println(v.distance);
-                //if(min[0]>v.distance) min[0]=v.distance;
+                if(min[0]>v.distance) min[0]=v.distance;
                 //min[1]=min[1]+v.distance;
                 dis.add(Float.valueOf(v.distance));
                 km.addRecord(v.distance);
                 //sum[0]=sum[0]+v.distance;
             });
             //System.out.println("------------------");
-            km.setK(10);
+            km.setK(5);
             List<List<Float>> cresult = km.clustering();
             List<Float> center = km.getClusteringCenterT();
             //int i[]={0};
             //System.out.println("================================");
             //center.forEach((v1)->{System.out.println("v1:"+v1+";cresult:"+cresult.get(i[0]).size()+"k1:"+center.);});
             List<Float> center1=center.stream().sorted().collect(Collectors.toList());
-
+            cresult.forEach((v2)->{System.out.println(v2.size());});
             System.out.println("================================"+center.toString());
             Double deviation=StandardDiviation(dis);
             //System.out.println("AVG:"+min[1]/matrix.toList().size()+"deviation:"+deviation);
             System.out.println("++++++++++++++++++++++++++++++++++++++");
             //min[1]=min[1]/matrix.toList().size();
             List<DMatch> ldm=new ArrayList<DMatch>();
-            for(int j=0;j<3;j++)
+
+            for(int j=0;j<1;j++)
             {
                 List<Float> f = cresult.get(center.indexOf(center1.get(j)));
                 f.forEach((k) -> {
@@ -129,9 +130,13 @@ public class sign {
                     });
                     System.out.println(k);
                 });
-                System.out.println("j="+j+";"+center1.get(j));
+                System.out.println("j="+j+";"+(double)f.size()/matrix.toList().size()+";"+center1.get(j));
             }
 
+
+            //matrix.toList().forEach((v) -> {
+            //    if(min[0]/0.8 >=v.distance) ldm.add(v);
+            //        });
             //System.out.println(String.valueOf(min[0])+","+ldm.size()+";"+(double)ldm.size()/matrix.toList().size());
             goodmatrix.fromList(ldm);
             Features2d.drawMatches(outtimg1, mkp1, outtimg2, mkp2, goodmatrix, img_matches);
