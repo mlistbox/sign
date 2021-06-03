@@ -54,7 +54,7 @@ public class sign {
         try {
             //URL url = ClassLoader.getSystemResource("G:\\opencv\\opencv\\build\\java\\x64\\opencv_java452.dll");
             //System.load(url.getPath());
-            Mat src_img1 = Imgcodecs.imread("F:\\SIFT\\01.jpg",Imgcodecs.IMREAD_GRAYSCALE);
+            Mat src_img1 = Imgcodecs.imread("F:\\SIFT\\05.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img1 = new Mat();
             Mat outimg1=new Mat();
             Mat outtimg1=new Mat();
@@ -72,7 +72,7 @@ public class sign {
             //HighGui.imshow("image after", outimg1);
             //HighGui.waitKey(0);
 
-            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\02.jpg",Imgcodecs.IMREAD_GRAYSCALE);
+            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\06.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img2 = new Mat();
             Mat outimg2=new Mat();
             Mat outtimg2=new Mat();
