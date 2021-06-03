@@ -3,11 +3,13 @@ import org.opencv.features2d.*;
 import org.opencv.highgui.HighGui;
 import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
-
+import org.opencv.core.CvType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import static org.opencv.core.Core.BORDER_DEFAULT;
 
 public class sign {
     public static double Variance(double[] x) {
@@ -56,26 +58,33 @@ public class sign {
             Mat img1 = new Mat();
             Mat outimg1=new Mat();
             Mat outtimg1=new Mat();
+            Mat descriptor1= new Mat();
+            Mat descriptor2 = new Mat();
             Imgproc.resize(src_img1, img1, new Size(1024, 682));
             Imgproc.cvtColor(img1,outimg1,Imgproc.COLOR_BayerGB2GRAY);
-            //Imgproc.threshold(outimg1,outtimg1,170,255,Imgproc.THRESH_BINARY);
-            //HighGui.imshow("image after", outtimg1);
-            //HighGui.waitKey(0);
+            Imgproc.threshold(outimg1,outtimg1,150,255,Imgproc.THRESH_BINARY);
+
+            Imgproc.cornerHarris(outtimg1,descriptor1, 2, 3, 0.04, BORDER_DEFAULT);
+            Core.normalize(descriptor1,descriptor1,1.0,0.0,Core.NORM_MINMAX);
+            descriptor1.convertTo(descriptor2,CvType.CV_8UC1,255,0);
+            Imgproc.threshold(descriptor2,outimg1,50,255,Imgproc.THRESH_BINARY);
+            HighGui.imshow("image after", outimg1);
+            HighGui.waitKey(0);
+
             Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\06.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img2 = new Mat();
             Mat outimg2=new Mat();
             Mat outtimg2=new Mat();
             Imgproc.resize(src_img2, img2, new Size(1024, 682));
             Imgproc.cvtColor(img2,outimg2,Imgproc.COLOR_BayerGB2GRAY);
-            //Imgproc.threshold(outimg2,outtimg2,170,255,Imgproc.THRESH_BINARY);
+            Imgproc.threshold(outimg2,outtimg2,170,255,Imgproc.THRESH_BINARY);
             Features2d fd=new Features2d();
             SIFT sift = SIFT.create(0,8,0.1,6,1);
             MatOfKeyPoint mkp1 =new MatOfKeyPoint();
             MatOfKeyPoint mkp2 =new MatOfKeyPoint();
             //sift.detect(img1,mkp1);
             //sift.detect(img2,mkp2);
-            Mat descriptor1= new Mat();
-            Mat descriptor2 = new Mat();
+
             //sift.compute(img1, mkp1, descriptor1);
             //sift.compute(img2, mkp2, descriptor2);
             sift.detectAndCompute(outimg1,new Mat(),mkp1,descriptor1);
