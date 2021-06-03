@@ -54,32 +54,35 @@ public class sign {
         try {
             //URL url = ClassLoader.getSystemResource("G:\\opencv\\opencv\\build\\java\\x64\\opencv_java452.dll");
             //System.load(url.getPath());
-            Mat src_img1 = Imgcodecs.imread("F:\\SIFT\\05.jpg",Imgcodecs.IMREAD_GRAYSCALE);
+            Mat src_img1 = Imgcodecs.imread("F:\\SIFT\\01.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img1 = new Mat();
             Mat outimg1=new Mat();
             Mat outtimg1=new Mat();
             Mat descriptor1= new Mat();
             Mat descriptor2 = new Mat();
-            Imgproc.resize(src_img1, img1, new Size(1024, 682));
-            Imgproc.cvtColor(img1,outimg1,Imgproc.COLOR_BayerGB2GRAY);
-            Imgproc.threshold(outimg1,outtimg1,150,255,Imgproc.THRESH_BINARY);
+            Imgproc.resize(src_img1, img1, new Size(640, 426));
+            //Imgproc.cvtColor(img1,outimg1,Imgproc.COLOR_BayerGB2GRAY);
+            //Imgproc.threshold(outimg1,outtimg1,150,255,Imgproc.THRESH_BINARY);
 
-            Imgproc.cornerHarris(outtimg1,descriptor1, 2, 3, 0.04, BORDER_DEFAULT);
-            Core.normalize(descriptor1,descriptor1,1.0,0.0,Core.NORM_MINMAX);
-            descriptor1.convertTo(descriptor2,CvType.CV_8UC1,255,0);
-            Imgproc.threshold(descriptor2,outimg1,50,255,Imgproc.THRESH_BINARY);
-            HighGui.imshow("image after", outimg1);
-            HighGui.waitKey(0);
+            //Imgproc.cornerHarris(outtimg1,descriptor1, 2, 3, 0.04, BORDER_DEFAULT);
+            //Core.normalize(descriptor1,descriptor1,1.0,0.0,Core.NORM_MINMAX);
+            //descriptor1.convertTo(descriptor2,CvType.CV_8UC1,255,0);
+            //Imgproc.threshold(descriptor2,outimg1,50,255,Imgproc.THRESH_BINARY);
+            outimg1=canny(img1);
+            //HighGui.imshow("image after", outimg1);
+            //HighGui.waitKey(0);
 
-            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\06.jpg",Imgcodecs.IMREAD_GRAYSCALE);
+            Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\02.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img2 = new Mat();
             Mat outimg2=new Mat();
             Mat outtimg2=new Mat();
-            Imgproc.resize(src_img2, img2, new Size(1024, 682));
-            Imgproc.cvtColor(img2,outimg2,Imgproc.COLOR_BayerGB2GRAY);
-            Imgproc.threshold(outimg2,outtimg2,170,255,Imgproc.THRESH_BINARY);
+            Imgproc.resize(src_img2, img2, new Size(640, 426));
+            //Imgproc.cvtColor(img2,outimg2,Imgproc.COLOR_BayerGB2GRAY);
+            //Imgproc.threshold(outimg2,outtimg2,170,255,Imgproc.THRESH_BINARY);
+            outimg2=canny(img2);
             Features2d fd=new Features2d();
-            SIFT sift = SIFT.create(0,8,0.1,6,1);
+            //SIFT sift = SIFT.create(0,10,0.1,6,1);
+            SIFT sift = SIFT.create();
             MatOfKeyPoint mkp1 =new MatOfKeyPoint();
             MatOfKeyPoint mkp2 =new MatOfKeyPoint();
             //sift.detect(img1,mkp1);
@@ -123,7 +126,7 @@ public class sign {
             System.out.println("================================"+center.toString());
             Double deviation=StandardDiviation(dis);
             //System.out.println("AVG:"+min[1]/matrix.toList().size()+"deviation:"+deviation);
-            System.out.println("++++++++++++++++++++++++++++++++++++++");
+
             //min[1]=min[1]/matrix.toList().size();
             List<DMatch> ldm=new ArrayList<DMatch>();
             /*
@@ -146,7 +149,8 @@ public class sign {
             matrix.toList().forEach((v) -> {
                 if(min[0]*3 >=v.distance) ldm.add(v);
                     });
-            System.out.println(String.valueOf(min[0])+","+ldm.size()+";"+(double)ldm.size()/matrix.toList().size());
+            System.out.println("++++++++++++++++++++++++++++++++++++++");
+            System.out.println(String.valueOf(min[0])+","+ldm.size()+";"+(double)ldm.size()/matrix.toList().size()+";"+matrix.toList().size());
             goodmatrix.fromList(ldm);
             Features2d.drawMatches(outimg1, mkp1, outimg2, mkp2, goodmatrix, img_matches);
             //fd.drawKeypoints(img1,mkp1,outimg1);
@@ -159,6 +163,22 @@ public class sign {
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+    }
+    static Mat canny(Mat src)
+    {
+        try {
+            Mat outimg = new Mat();
+            Mat dis = new Mat();
+            Imgproc.cvtColor(src, outimg, Imgproc.COLOR_BayerGB2GRAY);
+            Imgproc.threshold(outimg, dis, 150, 255, Imgproc.THRESH_BINARY);
+            Imgproc.Canny(dis,dis,150, 100,3 );
+            return dis;
+        }
+        catch(Exception e)
+        {
+            e.printStackTrace();
+            return null;
         }
     }
 }
