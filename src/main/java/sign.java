@@ -69,8 +69,11 @@ public class sign {
             //descriptor1.convertTo(descriptor2,CvType.CV_8UC1,255,0);
             //Imgproc.threshold(descriptor2,outimg1,50,255,Imgproc.THRESH_BINARY);
             outimg1=canny(img1);
-            //HighGui.imshow("image after", outimg1);
-            //HighGui.waitKey(0);
+            //System.out.println(outimg1.cols()+";"+outimg1.rows());
+            //Imgproc.fitLine((new MatOfPoint(outimg1)).convertTo(outimg1.);,outtimg1,Imgproc.DIST_L2,0,0.01,0.01);
+            Imgproc.HoughLinesP(outimg1,outtimg1,1,3.14159/180,50,50,10);
+            HighGui.imshow("image after", outtimg1);
+            HighGui.waitKey(0);
 
             Mat src_img2 = Imgcodecs.imread("F:\\SIFT\\06.jpg",Imgcodecs.IMREAD_GRAYSCALE);
             Mat img2 = new Mat();
