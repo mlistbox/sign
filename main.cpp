@@ -1,3 +1,7 @@
+// This need edit OpenCV project.
+// File name is sift.simd.hpp
+// This line "static const int SIFT_ORI_HIST_BINS = 36" modify "= 72";
+// Person sign must less than vector unit 5/360
 #include "opencv2/opencv.hpp"
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
@@ -11,12 +15,12 @@ using namespace cv;
  static double StandardDiviation(std::vector< DMatch > x) {
 	int m = x.size();
 	double sum = 0;
-	for (int i = 0; i < m; i++) {//求和
+	for (int i = 0; i < m; i++) {//脟贸潞脥
 		sum += x[i].distance;
 	}
-	double dAve = sum / m;//求平均值
+	double dAve = sum / m;//脟贸脝陆戮霉脰碌
 	double dVar = 0;
-	for (int i = 0; i < m; i++) {//求方差
+	for (int i = 0; i < m; i++) {//脟贸路陆虏卯
 		dVar += (x[i].distance - dAve) * (x[i].distance - dAve);
 	}
 	//reture Math.sqrt(dVar/(m-1));
